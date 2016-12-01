@@ -13,7 +13,7 @@ IMG_FILE = '../train/*.jpg'
 LABEL_FILE = '../train.csv'
 NPY_FILE = './save_epoch0.npy'
 TEST_FILE = '../val/*.jpg'
-PRIVATE_TEST_FILE = '../test_private/*.jpg'
+PRIVATE_TEST_FILE = '../test_128/*.jpg'
 NUM_EPOCH = 10
 ITERATIONS_PER_EPOCH = 100   # Must have: 6900/ITERATION_PER_EPOCH = integer
 BATCH_SIZE = 6900/ITERATIONS_PER_EPOCH
