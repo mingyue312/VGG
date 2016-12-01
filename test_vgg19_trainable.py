@@ -51,7 +51,7 @@ with tf.device('/gpu:0'):
 
     if not HAVE_LABEL:
         for i in range(0, 97):
-            test_img = parse_img(0, 0)
+            test_img = parse_img(i*10, (i+1)*10)
             images = tf.placeholder(tf.float32, [None, 224, 224, 3])
             true_out = tf.placeholder(tf.float32, [None, 8])
             train_mode = tf.placeholder(tf.bool)
