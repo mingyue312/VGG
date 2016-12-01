@@ -20,6 +20,8 @@ BATCH_SIZE = 6900/ITERATIONS_PER_EPOCH
 HAVE_LABEL = False
 
 
+private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
+
 def parse_img(start, end):
     if HAVE_LABEL:
         all_imgs = sorted(glob.glob(IMG_FILE))
@@ -36,7 +38,7 @@ def parse_img(start, end):
         return img_placeholder, labels_one_hot
     else:
         #test_imgs = sorted(glob.glob(TEST_FILE))
-        private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
+        #private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
         #test_img_placeholder = np.empty([(end-start), 224, 224, 3])
         private_img_placeholder = np.empty([(end-start), 224, 224, 3])
         #for i in range(start, end):
