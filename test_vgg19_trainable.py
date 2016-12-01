@@ -11,8 +11,9 @@ import utils
 
 IMG_FILE = '../train/*.jpg'
 LABEL_FILE = '../train.csv'
-NUM_EPOCH = 2
-ITERATIONS_PER_EPOCH = 690   # Must have: 6900/ITERATION_PER_EPOCH = integer
+NPY_FILE = './save_epoch0'
+NUM_EPOCH = 5
+ITERATIONS_PER_EPOCH = 100   # Must have: 6900/ITERATION_PER_EPOCH = integer
 BATCH_SIZE = 6900/ITERATIONS_PER_EPOCH
 
 
@@ -41,14 +42,14 @@ with tf.device('/cpu:0'):
     true_out = tf.placeholder(tf.float32, [None, 8])
     train_mode = tf.placeholder(tf.bool)
 
-    vgg = vgg19.Vgg19('./vgg19.npy')
+    vgg = vgg19.Vgg19(NPY_FILE)
     vgg.build(images, train_mode)
 
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(vgg.fc8, true_out))
     prediction = tf.equal(tf.argmax(vgg.prob, 1), tf.argmax(true_out, 1))
     accuracy = tf.reduce_mean(tf.cast(prediction, tf.float32))
 
-    train_op = tf.train.MomentumOptimizer(0.001, 0.9).minimize(loss, var_list=[v for v in tf.all_variables() if v.name.startswith('fc8')])
+    train_op = tf.train.MomentumOptimizer(0.0005, 0.9).minimize(loss, var_list=[v for v in tf.all_variables() if v.name.startswith('fc')])
 
     # print number of variables used: 143667240 variables, i.e. ideal size = 548MB
     print vgg.get_var_count()
@@ -68,6 +69,6 @@ with tf.device('/cpu:0'):
 
             # train:
             sess.run(train_op, feed_dict={images:batch_img, true_out:batch_label, train_mode:True})
-        save_name = './save_epoch' + str(k) + '.npy'
+        save_name = './fc_train_epoch' + str(k) + '.npy'
         vgg.save_npy(sess, save_name)
 
