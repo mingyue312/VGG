@@ -37,10 +37,10 @@ def parse_img(start, end):
     else:
         test_imgs = sorted(glob.glob(TEST_FILE))
         #private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
-        test_img_placeholder = np.empty([970, 224, 224, 3])
+        test_img_placeholder = np.empty([(end-start), 224, 224, 3])
         #private_img_placeholder = np.empty([2000, 224, 224, 3])
-        for i in range(0,970):
-            test_img_placeholder[i,:,:,:] = utils.load_image(test_imgs[i])
+        for i in range(start, end):
+            test_img_placeholder[i-start,:,:,:] = utils.load_image(test_imgs[i])
         #for i in range(0,2000):
         #    private_img_placeholder[i,:,:,:] = utils.load_image(private_imgs[i])
         return test_img_placeholder#, private_img_placeholder
@@ -50,20 +50,21 @@ with tf.device('/gpu:0'):
     sess = tf.Session()
 
     if not HAVE_LABEL:
-        test_img = parse_img(0, 0)
-        images = tf.placeholder(tf.float32, [None, 224, 224, 3])
-        true_out = tf.placeholder(tf.float32, [None, 8])
-        train_mode = tf.placeholder(tf.bool)
+        for i in range(0, 97):
+            test_img = parse_img(0, 0)
+            images = tf.placeholder(tf.float32, [None, 224, 224, 3])
+            true_out = tf.placeholder(tf.float32, [None, 8])
+            train_mode = tf.placeholder(tf.bool)
 
-        vgg = vgg19.Vgg19(NPY_FILE, False)
-        vgg.build(test_img, train_mode)
-        test_prob = sess.run(vgg.prob, feed_dict={images:test_img, train_mode:False})
-        #private_prob = sess.run(vgg.prob, feed_dict={images:private_img, train_mode:False})
-        test_result = sess.run(tf.argmax(test_prob, 1))
-        #private_result = sess.run(tf.argmax(private_prob, 1))
+            vgg = vgg19.Vgg19(NPY_FILE, False)
+            vgg.build(test_img, train_mode)
+            test_prob = sess.run(vgg.prob, feed_dict={images:test_img, train_mode:False})
+            #private_prob = sess.run(vgg.prob, feed_dict={images:private_img, train_mode:False})
+            test_result = sess.run(tf.argmax(test_prob, 1))
+            #private_result = sess.run(tf.argmax(private_prob, 1))
 
-        print(test_result)
-        #print(private_result)
+            print(test_result)
+            #print(private_result)
 
     else:
         val_img, val_label = parse_img(6900, 7000)
