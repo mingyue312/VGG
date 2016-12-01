@@ -44,6 +44,8 @@ class Vgg19:
         ])
         assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
+        bgr = tf.cast(bgr, tf.float32)
+
         self.conv1_1 = self.conv_layer(bgr, 3, 64, "conv1_1")
         self.conv1_2 = self.conv_layer(self.conv1_1, 64, 64, "conv1_2")
         self.pool1 = self.max_pool(self.conv1_2, 'pool1')
@@ -135,11 +137,7 @@ class Vgg19:
 
     def get_var(self, initial_value, name, idx, var_name):
         if self.data_dict is not None and name in self.data_dict:
-            # use a different size for fc8
-            if name != "fc8":
-                value = self.data_dict[name][idx]
-            else:
-                value = initial_value
+            value = self.data_dict[name][idx]
         else:
             value = initial_value
 
