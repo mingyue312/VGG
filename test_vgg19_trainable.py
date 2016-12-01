@@ -35,22 +35,22 @@ def parse_img(start, end):
             labels_one_hot[i-start, int(labels[i]-1)] = 1
         return img_placeholder, labels_one_hot
     else:
-        test_imgs = sorted(glob.glob(TEST_FILE))
-        #private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
-        test_img_placeholder = np.empty([(end-start), 224, 224, 3])
-        #private_img_placeholder = np.empty([2000, 224, 224, 3])
-        for i in range(start, end):
-            test_img_placeholder[i-start,:,:,:] = utils.load_image(test_imgs[i])
-        #for i in range(0,2000):
-        #    private_img_placeholder[i,:,:,:] = utils.load_image(private_imgs[i])
-        return test_img_placeholder#, private_img_placeholder
+        #test_imgs = sorted(glob.glob(TEST_FILE))
+        private_imgs = sorted(glob.glob(PRIVATE_TEST_FILE))
+        #test_img_placeholder = np.empty([(end-start), 224, 224, 3])
+        private_img_placeholder = np.empty([(end-start), 224, 224, 3])
+        #for i in range(start, end):
+        #    test_img_placeholder[i-start,:,:,:] = utils.load_image(test_imgs[i])
+        for i in range(start,end):
+            private_img_placeholder[i-start,:,:,:] = utils.load_image(private_imgs[i])
+        return private_img_placeholder
 
 
 with tf.device('/gpu:0'):
     sess = tf.Session()
 
     if not HAVE_LABEL:
-        for i in range(0, 97):
+        for i in range(0, 200):
             test_img = parse_img(i*10, (i+1)*10)
             images = tf.placeholder(tf.float32, [None, 224, 224, 3])
             true_out = tf.placeholder(tf.float32, [None, 8])
