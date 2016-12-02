@@ -52,14 +52,15 @@ with tf.device('/gpu:0'):
     sess = tf.Session()
 
     if not HAVE_LABEL:
-        for i in range(0, 200):
-            test_img = parse_img(i*10, (i+1)*10)
-            images = tf.placeholder(tf.float32, [None, 224, 224, 3])
-            true_out = tf.placeholder(tf.float32, [None, 8])
-            train_mode = tf.placeholder(tf.bool)
 
-            vgg = vgg19.Vgg19(NPY_FILE, False)
-            vgg.build(test_img, train_mode)
+        images = tf.placeholder(tf.float32, [None, 224, 224, 3])
+        true_out = tf.placeholder(tf.float32, [None, 8])
+        train_mode = tf.placeholder(tf.bool)
+
+        vgg = vgg19.Vgg19(NPY_FILE, False)
+        vgg.build(images, train_mode)
+        for i in range(0, 200):
+            test_img = parse_img(i * 10, (i + 1) * 10)
             test_prob = sess.run(vgg.prob, feed_dict={images:test_img, train_mode:False})
             #private_prob = sess.run(vgg.prob, feed_dict={images:private_img, train_mode:False})
             test_result = sess.run(tf.argmax(test_prob, 1))
